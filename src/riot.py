@@ -1,5 +1,4 @@
 import requests
-import json
 
 class Riot:
     api_key = None
@@ -19,8 +18,8 @@ class Riot:
             raise Exception('You need to provide a valid region for this call.')
 
     def init_valid_regions(self):
-        self.valid_regions = ['BR', 'EUNE', 'EUW', 'KR', 'LAN', \
-                              'LAS', 'NA', 'OCE', 'RU', 'TR' \
+        self.valid_regions = ['br', 'eune', 'euw', 'kr', 'lan', \
+                              'las', 'na', 'oce', 'ru', 'tr' \
                              ]
 
     def init_base_url(self):
@@ -40,9 +39,12 @@ class Riot:
     def get_api_key_query_string(self):
         return '?api_key={0}'.format(self.api_key)
 
+    def set_region(self, region):
+        self.region = self.standardize_name(region) 
+
     def __init__(self, api_key, region = None):
         self.api_key = api_key
-        self.region = region
+        self.set_region(region)
         self.init_valid_regions()
         self.init_base_url()
 
@@ -92,8 +94,8 @@ class Riot:
 
         url = self.base_summoner_url + '/by-name'
         url += '/' + names + self.get_api_key_query_string()
-
-        return requests.get(url).json()
+        
+        return requests.get(url).text
 
     def get_summoner_by_id(self, ids):
         self.init_summoner_url()
@@ -105,4 +107,4 @@ class Riot:
         url = self.base_summoner_url
         url += '/' + ids + self.get_api_key_query_string()
 
-        return requests.get(url).json()
+        return requests.get(url).text
